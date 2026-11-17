@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <g id="Upper-Wings" fill="#FFFFFF">
+    <path id="Upper-Wing-Left" d="M382 420C290 390 102 325 116 156C125 49 252 74 332 177C373 230 387 323 382 420Z"/>
+    <path id="Upper-Wing-Right" d="M418 420C510 390 698 325 684 156C675 49 548 74 468 177C427 230 413 323 418 420Z"/>
+  </g>
+  <g id="Lower-Wings" fill="#FFFFFF">
+    <path id="Lower-Wing-Left" d="M378 420C284 414 132 421 143 556C155 682 291 644 358 535C378 502 385 457 378 420Z"/>
+    <path id="Lower-Wing-Right" d="M422 420C516 414 668 421 657 556C645 682 509 644 442 535C422 502 415 457 422 420Z"/>
+  </g>
+  <g id="Body" fill="#FFFFFF">
+    <path d="M383 285C383 272 391 262 400 262C409 262 417 272 417 285L424 555C425 582 414 608 400 629C386 608 375 582 376 555L383 285Z"/>
+    <path d="M400 275C383 275 372 261 372 244C372 227 383 215 400 215C417 215 428 227 428 244C428 261 417 275 400 275Z"/>
+  </g>
+  <g id="Antennae" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round">
+    <path id="Antenna-Left" d="M392 226C380 182 347 151 310 139"/>
+    <path id="Antenna-Right" d="M408 226C420 182 453 151 490 139"/>
+  </g>
+</svg>

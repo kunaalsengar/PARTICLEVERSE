@@ -170,7 +170,7 @@ export const particleVertexShader = `
     float noise2 = snoise(basePos * uNoiseScale * 0.8 + vec3(time * 0.5 + 10.0));
     float noise3 = snoise(basePos * uNoiseScale * 1.2 + vec3(time * 0.7 + 25.0));
 
-    vec3 organicDisplacement = vec3(noise1, noise2, noise3) * (0.28 * aSizeOffset);
+    vec3 organicDisplacement = vec3(noise1, noise2, noise3) * (0.06 * aSizeOffset);
     vec3 pos = basePos + organicDisplacement;
 
     // ----------------------------------------------------
@@ -293,8 +293,8 @@ export const particleVertexShader = `
     }
     // 3. Double Helix: Cyan and violet contrasting strands
     else {
-      // In double helix, the two intertwined spiral strands alternate in angular phase
-      float strandPhase = sin(pos.y * 3.14159265 * 0.85 + atan(pos.z, pos.x));
+      // In double helix, the two intertwined spiral strands alternate in angular phase (pitch k = 3.534)
+      float strandPhase = sin(atan(pos.z, pos.x) - pos.y * 3.534);
       float strandFactor = smoothstep(-0.2, 0.2, strandPhase);
       vec3 electricCyan = vec3(0.0, 0.95, 1.0);
       vec3 radiantViolet = vec3(0.85, 0.15, 1.0);
