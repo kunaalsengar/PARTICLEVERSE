@@ -168,7 +168,7 @@ export class FormationEngine {
       const theta = u * 2.0 * Math.PI;
       const phi = Math.acos(2.0 * v - 1.0);
       const r = Math.cbrt(Math.random()) * 0.8;
-      
+
       pos[idx++] = r * Math.sin(phi) * Math.cos(theta) * 0.9;
       pos[idx++] = r * Math.cos(phi) * 0.5 + 0.2;
       pos[idx++] = r * Math.sin(phi) * Math.sin(theta) * 1.3 + 0.5;
@@ -193,7 +193,7 @@ export class FormationEngine {
       const side = leg < 4 ? 1 : -1;
       const legIndexOnSide = leg % 4;
       const baseAngle = ((legIndexOnSide - 1.5) * 0.45) * Math.PI * 0.5;
-      
+
       for (let i = 0; i < particlesPerLeg; i++) {
         const t = i / particlesPerLeg;
         let lx = side * (0.6 + t * 3.4 * (1.0 + Math.sin(baseAngle) * 0.3));
@@ -221,7 +221,7 @@ export class FormationEngine {
   private static generateNeural(pos: Float32Array, count: number): void {
     const clusterCount = 14;
     const centers: THREE.Vector3[] = [];
-    
+
     for (let c = 0; c < clusterCount; c++) {
       centers.push(
         new THREE.Vector3(
@@ -286,46 +286,60 @@ export class FormationEngine {
   // 4. Double Helix (Quantum Double Helix)
   private static generateHelix(pos: Float32Array, count: number): void {
     let idx = 0;
-    const strandParticles = Math.floor(count * 0.72);
+    // Elegant biological DNA proportions:
+    // Radius = 0.95 (diameter = 1.9), height = 4.0, turns = 2.25
+    // Height-to-diameter ratio ~ 2.1:1
+    const radius = 0.95;
+    const height = 4.0;
+    const turns = 2.25;
+
+    // 65% for the two continuous backbones, 35% for base-pair rungs
+    const strandParticles = Math.floor(count * 0.65);
     const rungParticles = count - strandParticles;
+    const halfStrand = Math.floor(strandParticles / 2);
 
-    // Radius and height with balanced proportions (~1.2 ratio instead of 2.0+)
-    const radius = 2.0;
-    const height = 4.8;
-    const turns = 3.5;
+    // 1. Two primary intertwined DNA strands (180 deg out of phase)
+    for (let s = 0; s < 2; s++) {
+      const phase = s * Math.PI;
+      for (let i = 0; i < halfStrand && idx < count * 3; i++) {
+        const progress = i / halfStrand;
+        const y = (progress - 0.5) * height;
+        const theta = progress * Math.PI * 2 * turns + phase;
 
-    // 1. Two primary intertwined DNA strands
-    for (let i = 0; i < strandParticles; i++) {
-      const strand = i % 2;
-      const progress = i / strandParticles;
-      const t = progress * Math.PI * 2 * turns;
-      const y = (progress - 0.5) * height;
-      const phase = strand * Math.PI;
+        // Tube thickness around each strand backbone
+        const rTube = 0.07;
+        const tubeAngle = Math.random() * Math.PI * 2;
+        const tubeRad = Math.sqrt(Math.random()) * rTube;
 
-      const rJitter = (Math.random() - 0.5) * 0.15;
-      const yJitter = (Math.random() - 0.5) * 0.10;
-      const r = radius + rJitter;
-
-      pos[idx++] = Math.cos(t + phase) * r;
-      pos[idx++] = y + yJitter;
-      pos[idx++] = Math.sin(t + phase) * r;
+        pos[idx++] = Math.cos(theta) * radius + Math.cos(tubeAngle) * tubeRad;
+        pos[idx++] = y + (Math.random() - 0.5) * 0.03;
+        pos[idx++] = Math.sin(theta) * radius + Math.sin(tubeAngle) * tubeRad;
+      }
     }
 
-    // 2. Periodic base-pair connecting rungs bridging the two strands
-    const numRungs = 28;
-    for (let i = 0; i < rungParticles; i++) {
-      const rungIdx = Math.floor(Math.random() * numRungs);
-      const progress = (rungIdx + 0.5) / numRungs;
-      const t = progress * Math.PI * 2 * turns;
+    // 2. Regular base-pair rungs connecting the two strands across the central axis
+    const numRungs = 24;
+    const particlesPerRung = Math.floor(rungParticles / numRungs);
+    for (let r = 0; r < numRungs; r++) {
+      const progress = (r + 0.5) / numRungs;
       const y = (progress - 0.5) * height;
+      const theta = progress * Math.PI * 2 * turns;
 
-      // Interpolate along the rung between -radius and +radius
-      const u = Math.random() * 2.0 - 1.0;
-      const yJitter = (Math.random() - 0.5) * 0.08;
+      for (let p = 0; p < particlesPerRung && idx < count * 3; p++) {
+        // Interpolate along the rung between -radius and +radius
+        const u = (p / Math.max(1, particlesPerRung - 1)) * 2.0 - 1.0;
+        const jitter = (Math.random() - 0.5) * 0.03;
 
-      pos[idx++] = Math.cos(t) * radius * u + (Math.random() - 0.5) * 0.08;
-      pos[idx++] = y + yJitter;
-      pos[idx++] = Math.sin(t) * radius * u + (Math.random() - 0.5) * 0.08;
+        pos[idx++] = Math.cos(theta) * radius * u + jitter;
+        pos[idx++] = y + jitter;
+        pos[idx++] = Math.sin(theta) * radius * u + jitter;
+      }
+    }
+
+    // Fill any remainder
+    while (idx < count * 3) {
+      pos[idx] = pos[idx - 3];
+      idx++;
     }
   }
 
@@ -395,30 +409,79 @@ export class FormationEngine {
     }
   }
 
-  // 8. 3D Heart
+  // 8. 3D Heart (Cardioid Resonator)
   private static generateHeart(pos: Float32Array, count: number): void {
     let idx = 0;
 
-    for (let i = 0; i < count; i++) {
+    // Proportions and anatomy:
+    // Base 2D cardioid formula:
+    // x(t) = 16 * sin^3(t)
+    // y(t) = 13*cos(t) - 5*cos(2t) - 2*cos(3t) - cos(4t)
+    // Lobes at y ≈ 12.39, Tip at y = -17.0. Centroid offset: y_center = -2.30.
+    // Width = 32.0, Height = 29.4 (aspect ratio 1.09 : 1).
+    const shellCount = Math.floor(count * 0.40);
+    const domeCount = Math.floor(count * 0.40);
+    const coreCount = count - shellCount - domeCount;
+
+    // 1. Outer perimeter / boundary with 3D profile
+    for (let i = 0; i < shellCount && idx < count * 3; i++) {
       const t = Math.random() * Math.PI * 2;
-      const x = 16 * Math.pow(Math.sin(t), 3);
-      const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+      const bx = 16.0 * Math.pow(Math.sin(t), 3);
+      const by = (13.0 * Math.cos(t) - 5.0 * Math.cos(2 * t) - 2.0 * Math.cos(3 * t) - Math.cos(4 * t)) + 2.30;
 
-      // Volume distribution: 70% shell/outline, 30% interior volume
-      const isInterior = Math.random() < 0.3;
-      const rScale = isInterior ? Math.sqrt(Math.random()) * 0.95 : (1.0 + (Math.random() - 0.5) * 0.08);
-
-      const px = x * rScale;
-      const py = y * rScale;
-
-      // Depth variation: thickest at the upper lobes, tapering towards bottom point
-      const zSpread = Math.max(0.2, (1.0 - Math.abs(px) / 18.0)) * 5.5;
+      // 3D depth profile: thickest at the upper lobes, tapering smoothly towards bottom tip
+      const normY = (by + 14.7) / 29.4; // 0 (tip) to 1 (top of lobes)
+      const maxDepth = 4.5 * Math.sin(normY * Math.PI * 0.85) * (1.0 - Math.pow(Math.abs(bx) / 18.0, 2) * 0.25);
       const zSide = Math.random() > 0.5 ? 1 : -1;
-      const pz = zSide * Math.pow(Math.random(), 0.6) * zSpread * 0.5;
+      const bz = zSide * Math.sqrt(Math.random()) * Math.max(0.2, maxDepth) + (Math.random() - 0.5) * 0.25;
+
+      pos[idx++] = bx;
+      pos[idx++] = by;
+      pos[idx++] = bz;
+    }
+
+    // 2. Volumetric Front & Back Domes (full 3D heart volume)
+    for (let i = 0; i < domeCount && idx < count * 3; i++) {
+      const t = Math.random() * Math.PI * 2;
+      const bx = 16.0 * Math.pow(Math.sin(t), 3);
+      const by = (13.0 * Math.cos(t) - 5.0 * Math.cos(2 * t) - 2.0 * Math.cos(3 * t) - Math.cos(4 * t)) + 2.30;
+
+      const s = Math.sqrt(Math.random()) * 0.95;
+      const px = bx * s;
+      const py = by * s; // Interpolate inward toward (0, 0) since (bx, by) is already centered around 0
+
+      const domeFactor = Math.sqrt(Math.max(0.0, 1.0 - s * s));
+      const normY = (py + 14.7) / 29.4;
+      const lobeDepth = 5.5 * Math.sin(normY * Math.PI * 0.8) * domeFactor;
+
+      const zSide = Math.random() > 0.5 ? 1 : -1;
+      const pz = zSide * lobeDepth * (0.8 + Math.random() * 0.2);
 
       pos[idx++] = px;
       pos[idx++] = py;
       pos[idx++] = pz;
+    }
+
+    // 3. Interior Core (glowing heart lattice)
+    for (let i = 0; i < coreCount && idx < count * 3; i++) {
+      const t = Math.random() * Math.PI * 2;
+      const bx = 16.0 * Math.pow(Math.sin(t), 3);
+      const by = (13.0 * Math.cos(t) - 5.0 * Math.cos(2 * t) - 2.0 * Math.cos(3 * t) - Math.cos(4 * t)) + 2.30;
+
+      const s = Math.pow(Math.random(), 0.7) * 0.8;
+      const px = bx * s;
+      const py = by * s;
+      const pz = (Math.random() - 0.5) * 3.5 * (1.0 - s * 0.5);
+
+      pos[idx++] = px;
+      pos[idx++] = py;
+      pos[idx++] = pz;
+    }
+
+    // Fill remainder if any
+    while (idx < count * 3) {
+      pos[idx] = pos[idx - 3];
+      idx++;
     }
   }
 
@@ -468,7 +531,7 @@ export class FormationEngine {
         const ray = rays[Math.floor(Math.random() * rayCount)];
         const dist = Math.pow(Math.random(), 0.6) * 3.8;
         const spread = Math.pow(1.0 - dist / 3.8, 1.5) * 0.35;
-        
+
         pos[idx++] = ray.x * dist + (Math.random() - 0.5) * spread;
         pos[idx++] = ray.y * dist + (Math.random() - 0.5) * spread;
         pos[idx++] = ray.z * dist + (Math.random() - 0.5) * spread;
@@ -476,57 +539,108 @@ export class FormationEngine {
     }
   }
 
-  // 11. Chaos Butterfly
+  // 11. Chaos Butterfly (Parametric 3D Morpho Butterfly)
   private static generateButterfly(pos: Float32Array, count: number): void {
     let idx = 0;
-    let x = 0.1, y = 0.0, z = 0.0;
-    const dt = 0.008;
-    const sigma = 10.0;
-    const rho = 28.0;
-    const beta = 8.0 / 3.0;
+    // 72% wings (boundary + veins + membrane fill)
+    // 18% central segmented body (head, thorax, abdomen)
+    // 10% delicate paired antennae
+    const wingCount = Math.floor(count * 0.72);
+    const bodyCount = Math.floor(count * 0.18);
+    const antCount = count - wingCount - bodyCount;
 
-    // Warm-up integration to reach strange attractor
-    for (let k = 0; k < 500; k++) {
-      const dx = sigma * (y - x) * dt;
-      const dy = (x * (rho - z) - y) * dt;
-      const dz = (x * y - beta * z) * dt;
-      x += dx; y += dy; z += dz;
-    }
+    // 1. Bilateral 3D Wings with wide horizontal wingspan
+    const halfWings = Math.floor(wingCount / 2);
+    for (let i = 0; i < halfWings && idx < count * 3 - 5; i++) {
+      const t = Math.random() * Math.PI * 2;
+      // Harmonic wing envelope
+      const rEnvelope = Math.exp(Math.cos(t)) - 2.0 * Math.cos(4.0 * t) + 0.35 * Math.sin(t * 2.0);
+      const r = Math.max(0.15, rEnvelope);
 
-    const halfCount = Math.floor(count / 2);
-    // Generate half on trajectory, mirror the other half for 100% bilateral wing symmetry
-    for (let i = 0; i < halfCount; i++) {
-      for (let s = 0; s < 6; s++) {
-        const dx = sigma * (y - x) * dt;
-        const dy = (x * (rho - z) - y) * dt;
-        const dz = (x * y - beta * z) * dt;
-        x += dx; y += dy; z += dz;
+      const dice = Math.random();
+      let s: number;
+      if (dice < 0.35) {
+        // Outer wing margin (crisp boundary)
+        s = 1.0 + (Math.random() - 0.5) * 0.04;
+      } else if (dice < 0.65) {
+        // Interior wing membrane
+        s = Math.sqrt(Math.random()) * 0.95;
+      } else {
+        // Radiating wing veins
+        s = Math.random() * 0.98;
       }
 
-      // Rotate 45 deg around vertical axis so the two attractor lobes spread horizontally across the screen
-      const u = (x + y) * 0.70710678;
-      const v = (x - y) * 0.70710678;
-      const h = z - 25.0;
+      // Majestic wide wingspan (horizontal spread = 1.30)
+      const px = r * Math.sin(t) * s * 1.30;
+      const py = r * Math.cos(t) * s;
 
-      const depthJitter = (Math.random() - 0.5) * 0.35;
-      const xJitter = (Math.random() - 0.5) * 0.2;
-      const yJitter = (Math.random() - 0.5) * 0.2;
+      // 3D Dihedral wing camber: wings angle gently upward and forward with lateral distance
+      const wingDist = Math.abs(px);
+      let pz = Math.sin(wingDist * 0.3) * 0.7 + (Math.cos(py * 0.35) - 1.0) * 0.25;
+      pz += (Math.random() - 0.5) * 0.08;
 
-      // Primary wing point
-      pos[idx++] = u + xJitter;
-      pos[idx++] = h + yJitter;
-      pos[idx++] = v * 0.45 + depthJitter;
+      // Right wing (+X)
+      pos[idx++] = Math.abs(px);
+      pos[idx++] = py;
+      pos[idx++] = pz;
+
+      // Left wing (-X) - 100% exact bilateral symmetry
+      pos[idx++] = -Math.abs(px);
+      pos[idx++] = py;
+      pos[idx++] = pz;
     }
 
-    // Mirror points across bilateral axis to guarantee exact symmetry for both wings
-    const pointsGenerated = Math.floor(idx / 3);
-    for (let i = 0; i < pointsGenerated && idx < count * 3; i++) {
-      pos[idx++] = -pos[i * 3];       // Invert horizontal X (wing spread)
-      pos[idx++] = pos[i * 3 + 1];     // Preserve vertical Y (height)
-      pos[idx++] = pos[i * 3 + 2];     // Preserve depth Z for matching dihedral
+    // 2. Central Segmented Body (abdomen, thorax, head along Y-axis)
+    for (let i = 0; i < bodyCount && idx < count * 3; i++) {
+      const yProg = Math.random();
+      const py = -2.0 + yProg * 3.6;
+      let rad: number;
+
+      if (py > 1.2) {
+        // Head (spherical bulb)
+        const headT = (py - 1.4) / 0.25;
+        rad = Math.sqrt(Math.max(0.01, 1.0 - headT * headT)) * 0.22;
+      } else if (py > 0.3) {
+        // Thorax (thickest segment where wings attach)
+        rad = 0.30 * (1.0 - Math.pow((py - 0.75) / 0.5, 2) * 0.3);
+      } else {
+        // Abdomen (tapered lower segment)
+        const abT = (py - 0.3) / -2.3;
+        rad = 0.22 * (1.0 - abT * 0.65);
+      }
+
+      const ang = Math.random() * Math.PI * 2;
+      const rSample = Math.sqrt(Math.random()) * rad;
+      const px = Math.cos(ang) * rSample;
+      const pz = Math.sin(ang) * rSample * 0.8 + 0.1;
+
+      pos[idx++] = px;
+      pos[idx++] = py;
+      pos[idx++] = pz;
     }
 
-    // Fill any remainder
+    // 3. Paired Antennae crowning head with curved tips
+    const halfAnt = Math.floor(antCount / 2);
+    for (let i = 0; i < halfAnt && idx < count * 3 - 5; i++) {
+      const prog = (i + 1) / halfAnt;
+      const t = prog * Math.PI * 0.6;
+      const px = Math.sin(t) * 0.9 * prog;
+      const py = 1.5 + Math.cos(t * 0.6) * 1.1 * prog;
+      const pz = 0.15 + prog * 0.35 + Math.sin(prog * Math.PI) * 0.12;
+      const jitter = (Math.random() - 0.5) * 0.03;
+
+      // Right antenna
+      pos[idx++] = px + jitter;
+      pos[idx++] = py + jitter;
+      pos[idx++] = pz + jitter;
+
+      // Left antenna
+      pos[idx++] = -px - jitter;
+      pos[idx++] = py + jitter;
+      pos[idx++] = pz + jitter;
+    }
+
+    // Fill remainder if any
     while (idx < count * 3) {
       pos[idx] = pos[idx - 3];
       idx++;

@@ -27,10 +27,29 @@ export function CameraRig() {
     }
   }, [size.width, size.height, camera]);
 
-  useFrame((state) => {
-    // Subtle organic camera breathing motion
-    const time = state.clock.getElapsedTime();
-    state.camera.position.y += Math.sin(time * 0.4) * 0.001;
+  // Expose camera reset hook for precision testing & viewport alignment
+  useEffect(() => {
+    (window as any).__RESET_CAMERA__ = () => {
+      const aspect = size.width / Math.max(1, size.height);
+      const minAspect = Math.min(1.0, aspect);
+      const targetZ = 8.05 / minAspect;
+      camera.position.set(0, 0, targetZ);
+      camera.lookAt(0, 0, 0);
+      if (controlsRef.current) {
+        controlsRef.current.target.set(0, 0, 0);
+        controlsRef.current.reset();
+      }
+    };
+    return () => {
+      delete (window as any).__RESET_CAMERA__;
+    };
+  }, [size.width, size.height, camera]);
+
+  // Target remains locked on origin (0, 0, 0)
+  useFrame(() => {
+    if (controlsRef.current) {
+      controlsRef.current.update();
+    }
   });
 
   return (

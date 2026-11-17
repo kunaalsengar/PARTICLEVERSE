@@ -1,172 +1,535 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap");
 @import "tailwindcss";
 
+:root {
+  color: #f7f9fc;
+  font-family: "Inter", sans-serif;
+  background: #000;
+  font-synthesis: none;
+}
+
 @layer base {
-  :root {
-    --color-space: #050508;
-    --color-surface-glass: #0F0F14;
-    --color-surface-card: #17171F;
-    --color-white: #FFFFFF;
-    --color-cyan: #00F0FF;
-    --color-violet: #B85CFF;
-    --color-emerald: #2DD4BF;
-    --color-detonation: #EF4444;
-    --color-amber: #F59E0B;
-
-    --font-heading: 'Syne', 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-  }
-
   body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--color-space);
-    color: var(--color-white);
-    font-family: var(--font-sans);
+    min-width: 320px;
+    min-height: 100vh;
     overflow: hidden;
-    user-select: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    background: #000;
   }
 
-  /* Custom subtle scrollbar */
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    background: rgba(5, 5, 8, 0.6);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.18);
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.35);
+  button,
+  input,
+  a {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
-/* ----------------------------------------------------
-   DESIGN TOKENS & SURFACE PRIMITIVES
-   ---------------------------------------------------- */
-
-.font-heading {
-  font-family: var(--font-heading);
-}
-
-.font-sans-body {
-  font-family: var(--font-sans);
-}
-
-.font-mono-data {
-  font-family: var(--font-mono);
-  font-feature-settings: "tnum" 1;
-}
-
-/* Glass Surface Standard */
-.glass-panel {
-  background: rgba(15, 15, 20, 0.72);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.75), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
-}
-
-/* Elevated Glass Surface (Drawers, Modals, Focus Panels) */
-.glass-panel-elevated {
-  background: rgba(15, 15, 20, 0.88);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.88), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-}
-
-/* Interactive Glass Cards */
-.glass-card {
-  background: rgba(23, 23, 31, 0.55);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-card:hover {
-  background: rgba(23, 23, 31, 0.85);
-  border-color: rgba(255, 255, 255, 0.18);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.7), 0 0 16px -2px rgba(255, 255, 255, 0.04);
-}
-
-/* Compact Glass Pills */
-.glass-pill {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.2s ease;
-}
-
-.glass-pill:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.18);
-}
-
-/* Active State for Buttons and Navigation Items */
-.glass-button-active {
-  background: rgba(255, 255, 255, 0.14) !important;
-  border-color: rgba(255, 255, 255, 0.32) !important;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-/* Cybernetic Status Badge */
-.badge-cyber {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.75);
-}
-
-/* HUD Viewport Brackets for Sci-Fi / Pro Viewport Aesthetic */
-.hud-corner {
+.app-shell {
   position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #000;
 }
-.hud-corner::before,
-.hud-corner::after {
-  content: '';
+
+.app-shell::after {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  border-color: rgba(255, 255, 255, 0.25);
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.34),
+      transparent 18%,
+      transparent 78%,
+      rgba(0, 0, 0, 0.5)
+    ),
+    radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, 0.32) 100%);
+  content: "";
+}
+
+.particle-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.topbar {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 22px 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(180deg, rgba(4, 6, 10, 0.72), rgba(4, 6, 10, 0.16));
+  backdrop-filter: blur(14px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: max-content;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.35);
+  transform: rotate(45deg);
+}
+
+.engine-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.engine-tabs button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.36);
+  font-family: "Inter", sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.engine-tabs button:hover {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.engine-tabs button.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.075);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.system-state {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.34);
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.system-state span,
+.dock-indicator {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #dfffea;
+  box-shadow: 0 0 7px rgba(163, 255, 198, 0.75);
+  animation: status 2.8s ease-in-out infinite;
+}
+
+.formation-info {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 30px;
+  transform: translateY(-50%);
   pointer-events: none;
 }
-.hud-corner::before {
-  top: -1px;
-  left: -1px;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-.hud-corner::after {
-  bottom: -1px;
-  right: -1px;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
+
+.formation-info p {
+  margin-bottom: 9px;
+  color: rgba(255, 255, 255, 0.26);
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-/* Subtle Sci-Fi Glow Utility Classes */
-.glow-cyan {
-  box-shadow: 0 0 24px -2px rgba(0, 240, 255, 0.35);
+.formation-info h1 {
+  width: min-content;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
-.glow-violet {
-  box-shadow: 0 0 24px -2px rgba(184, 92, 255, 0.35);
+
+.formation-info > span {
+  display: block;
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.24);
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
-.glow-emerald {
-  box-shadow: 0 0 24px -2px rgba(45, 212, 191, 0.35);
+
+.interaction-note {
+  position: absolute;
+  z-index: 3;
+  right: 30px;
+  bottom: 190px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(255, 255, 255, 0.28);
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
 }
-.glow-detonation {
-  box-shadow: 0 0 24px -2px rgba(239, 68, 68, 0.45);
+
+.interaction-note i {
+  width: 1px;
+  height: 10px;
+  margin: 0 2px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.cursor-ring {
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 50%;
+}
+
+.cursor-ring::after {
+  display: block;
+  width: 2px;
+  height: 2px;
+  margin: 5.5px;
+  border-radius: 50%;
+  background: #fff;
+  content: "";
+}
+
+.control-dock {
+  position: absolute;
+  z-index: 5;
+  bottom: 24px;
+  left: 50%;
+  width: min(680px, calc(100vw - 48px));
+  min-height: 132px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(8, 10, 15, 0.68);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.07),
+    0 18px 55px rgba(0, 0, 0, 0.45);
+  transform: translateX(-50%);
+  backdrop-filter: blur(22px) saturate(115%);
+}
+
+.control-dock > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.32);
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.control-dock > header div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.67);
+}
+
+.dock-content {
+  min-height: 91px;
+}
+
+.formation-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 10px;
+  gap: 6px;
+}
+
+.formation-controls button {
+  position: relative;
+  display: flex;
+  height: 70px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.38);
+  font-family: "Inter", sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.012);
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease,
+    background 0.3s ease,
+    transform 0.3s ease;
+}
+
+.formation-controls button:hover {
+  color: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.formation-controls button.active {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.025));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.formation-controls button.active::before {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+  content: "";
+}
+
+.formation-controls button span {
+  color: rgba(255, 255, 255, 0.22);
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+}
+
+.parameter-grid {
+  display: grid;
+  min-height: 90px;
+  grid-template-columns: 1fr 1fr 0.7fr;
+  align-items: center;
+  gap: 28px;
+  padding: 17px 20px;
+}
+
+.parameter-grid--physics {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.range-control > span {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 13px;
+  color: rgba(255, 255, 255, 0.44);
+  font-size: 8px;
+  letter-spacing: 0.07em;
+}
+
+.range-control output {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+}
+
+.range-control input {
+  width: 100%;
+  height: 1px;
+  outline: none;
+  appearance: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.85) var(--range),
+    rgba(255, 255, 255, 0.12) var(--range)
+  );
+  cursor: pointer;
+}
+
+.range-control input::-webkit-slider-thumb {
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  appearance: none;
+  background: #14171d;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.035);
+}
+
+.range-control input::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: #14171d;
+}
+
+.readout {
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.readout span {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.readout strong {
+  color: rgba(255, 255, 255, 0.82);
+  font-family: "DM Mono", monospace;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.download-link {
+  position: absolute;
+  z-index: 5;
+  top: 88px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.38);
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.download-link:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+@keyframes status {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    grid-template-columns: 1fr auto;
+    padding: 18px 16px;
+  }
+
+  .engine-tabs {
+    position: absolute;
+    top: 61px;
+    left: 50%;
+    width: calc(100vw - 32px);
+    transform: translateX(-50%);
+  }
+
+  .engine-tabs button {
+    flex: 1;
+    padding: 9px 4px;
+    font-size: 7px;
+  }
+
+  .system-state {
+    grid-column: 2;
+  }
+
+  .formation-info {
+    top: 125px;
+    left: 18px;
+    transform: none;
+  }
+
+  .formation-info h1 {
+    font-size: 20px;
+  }
+
+  .formation-info > span {
+    display: none;
+  }
+
+  .download-link {
+    top: 123px;
+    right: 18px;
+  }
+
+  .interaction-note {
+    display: none;
+  }
+
+  .control-dock {
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    min-height: 126px;
+  }
+
+  .formation-controls button {
+    height: 64px;
+    padding: 9px;
+    font-size: 7px;
+  }
+
+  .parameter-grid,
+  .parameter-grid--physics {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    padding: 15px;
+  }
+
+  .parameter-grid--physics .range-control:last-child {
+    display: none;
+  }
+
+  .readout {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
