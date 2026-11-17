@@ -99,12 +99,12 @@ export function PresetsDrawer() {
   const setFormation = useParticleStore((s) => s.setFormation);
   const setPalette = useParticleStore((s) => s.setPalette);
 
-  if (activeTab !== 'presets') return null;
+  if ((activeTab as string) !== 'presets') return null;
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-4">
       <div
-        onClick={() => setActiveTab('explore')}
+        onClick={() => setActiveTab('none')}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
       />
 
@@ -116,7 +116,7 @@ export function PresetsDrawer() {
             <h3 className="font-heading font-semibold text-lg text-white">Curated Presets</h3>
           </div>
           <button
-            onClick={() => setActiveTab('explore')}
+            onClick={() => setActiveTab('none')}
             className="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/50 hover:text-white transition cursor-pointer"
           >
             <X size={16} />
