@@ -15,19 +15,19 @@ export function StudioDrawer() {
   const updateConfig = useParticleStore((s) => s.updateConfig);
   const resetConfig = useParticleStore((s) => s.resetConfig);
 
-  if (activeTab !== 'studio') return null;
+  if (activeTab !== 'particle') return null;
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-96 glass-panel border-l border-white/10 p-6 flex flex-col justify-between overflow-y-auto">
+    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-96 glass-panel-elevated border-l border-white/10 p-6 flex flex-col justify-between overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.9)]">
       <div>
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
           <div className="flex items-center gap-2.5">
-            <Sliders className="text-white/80" size={18} />
-            <h3 className="font-heading font-semibold text-lg text-white">Creator Studio</h3>
+            <Sliders className="text-cyan-400" size={18} />
+            <h3 className="font-heading font-semibold text-lg text-white">Particle Engine</h3>
           </div>
           <button
-            onClick={() => setActiveTab('explore')}
+            onClick={() => setActiveTab('none')}
             className="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/50 hover:text-white transition cursor-pointer"
           >
             <X size={16} />

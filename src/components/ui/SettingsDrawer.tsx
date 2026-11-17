@@ -1,25 +1,31 @@
 import { useParticleStore } from '../../store/useParticleStore';
+import { FORMATIONS } from '../../constants/formations';
 import { Settings, X, Keyboard, ShieldCheck } from 'lucide-react';
 
 export function SettingsDrawer() {
   const activeTab = useParticleStore((s) => s.activeTab);
   const setActiveTab = useParticleStore((s) => s.setActiveTab);
 
-  if (activeTab !== 'settings') return null;
+  if ((activeTab as string) !== 'settings') return null;
 
   const shortcuts = [
     { key: 'Space', desc: 'Toggle Play / Pause simulation' },
     { key: '← / →', desc: 'Previous / Next formation' },
-    { key: 'H', desc: 'Toggle Minimal UI (Cinematic mode)' },
+    { key: 'E', desc: 'Toggle Particle Engine Panel' },
+    { key: 'P', desc: 'Toggle Physics Engine Panel' },
+    { key: 'F', desc: 'Toggle Formation Engine Panel' },
+    { key: 'M', desc: 'Cycle Physics Force Mode (Repulsion / Attraction / Vortex / Hybrid)' },
+    { key: 'T', desc: 'Cycle 3D Morph Transition Style (Smooth / Spiral / Explosive / Wave / Dissolve)' },
+    { key: 'B', desc: 'Trigger Cinematic Particle Blast / Explosion' },
     { key: 'R', desc: 'Toggle 3D Orbit Auto-Rotation' },
-    { key: 'C', desc: 'Toggle Automatic Morph Cycle' },
+    { key: 'H', desc: 'Toggle Minimal UI (Cinematic mode)' },
     { key: 'Esc', desc: 'Close dialogs & drawers' }
   ];
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-4">
       <div
-        onClick={() => setActiveTab('explore')}
+        onClick={() => setActiveTab('none')}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
       />
 
@@ -31,7 +37,7 @@ export function SettingsDrawer() {
             <h3 className="font-heading font-semibold text-lg text-white">Engine Settings</h3>
           </div>
           <button
-            onClick={() => setActiveTab('explore')}
+            onClick={() => setActiveTab('none')}
             className="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-white/50 hover:text-white transition cursor-pointer"
           >
             <X size={16} />
@@ -39,7 +45,7 @@ export function SettingsDrawer() {
         </div>
 
         {/* Content */}
-        <div className="space-y-6 pt-5">
+        <div className="space-y-6 pt-5 max-h-[60vh] overflow-y-auto pr-1">
           {/* Keyboard Shortcuts */}
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-white/80 uppercase tracking-wider mb-3">
@@ -65,10 +71,10 @@ export function SettingsDrawer() {
           <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
             <div className="flex items-center gap-2 text-xs font-semibold text-white/80 mb-1">
               <ShieldCheck size={14} className="text-emerald-400" />
-              <span>GPU Accelerated Architecture</span>
+              <span>Phase 03 Advanced Formation & Morph Engine</span>
             </div>
             <p className="text-xs text-white/50 leading-relaxed">
-              Rendering powered by Three.js `THREE.Points` with single-buffer geometry and custom GLSL vertex/fragment shaders. Zero per-particle React DOM overhead.
+              {FORMATIONS.length} deterministic parametric mathematical models rendered in real-time with 5 GPU-accelerated 3D morph transition styles.
             </p>
           </div>
         </div>

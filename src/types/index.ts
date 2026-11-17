@@ -1,4 +1,5 @@
 export type FormationType =
+  // Original 11 formations (Phase 01)
   | 'spider'
   | 'neural'
   | 'galaxy'
@@ -9,7 +10,25 @@ export type FormationType =
   | 'heart'
   | 'infinity'
   | 'star'
-  | 'butterfly';
+  | 'butterfly'
+  // 12 New Distinct Formations (Phase 03)
+  | 'icosahedron'
+  | 'dodecahedron'
+  | 'octahedron'
+  | 'klein-bottle'
+  | 'tree-of-life'
+  | 'coral'
+  | 'rose'
+  | 'nebula'
+  | 'pulsar'
+  | 'cosmic-web'
+  | 'crescent-moon'
+  | 'diamond'
+  | 'yin-yang';
+
+export type FormationCategory = 'organism' | 'geometric' | 'cosmic' | 'symbol';
+
+export type MorphStyle = 'smooth' | 'spiral' | 'explosive' | 'wave' | 'dissolve';
 
 export type ColorPaletteId =
   | 'pure-white'
@@ -19,6 +38,34 @@ export type ColorPaletteId =
   | 'inferno'
   | 'rainbow'
   | 'custom';
+
+export type PhysicsMode = 'repulsion' | 'attraction' | 'vortex' | 'hybrid';
+
+export type PhysicsPresetId =
+  | 'default'
+  | 'gravity'
+  | 'magnetic'
+  | 'vortex'
+  | 'explosion'
+  | 'flow'
+  | 'zero-gravity';
+
+export interface PhysicsPreset {
+  id: PhysicsPresetId;
+  name: string;
+  description: string;
+  mode: PhysicsMode;
+  attractionForce: number;
+  repulsionForce: number;
+  interactionRadius: number;
+  vortexStrength: number;
+  vortexDirection: number;
+  gravity: number;
+  damping: number;
+  explosionIntensity: number;
+  showConnections: boolean;
+  connectionDistance: number;
+}
 
 export interface ColorPalette {
   id: ColorPaletteId;
@@ -35,33 +82,54 @@ export interface ParticleConfig {
   movementSpeed: number;
   organicNoiseScale: number;
   organicNoiseSpeed: number;
-  connectionDistance: number;
+
+  // Physics parameters (Phase 02)
+  physicsEnabled: boolean;
+  physicsMode: PhysicsMode;
   attractionForce: number;
   repulsionForce: number;
+  mouseInteractionRadius: number;
+  vortexStrength: number;
+  vortexDirection: number; // 1 = Clockwise, -1 = Counter-Clockwise
+  vortexRadius: number;
+  gravity: number;
+  damping: number;
+  explosionIntensity: number;
+
+  // Connection network (Phase 02)
+  showConnections: boolean;
+  connectionDistance: number;
+  connectionOpacity: number;
+  maxConnectionsPerParticle: number;
+
+  // Formation & Morphing (Phase 03)
+  currentFormation: FormationType;
+  morphStyle: MorphStyle;
+  morphDuration: number;
+  autoCycleFormations: boolean;
+  autoCycleInterval: number; // in seconds
+  autoCycleShuffle: boolean;
+
+  // General controls
   rotationSpeed: number;
   depth: number;
   glow: number;
-  currentFormation: FormationType;
   currentPalette: ColorPaletteId;
   customColors: {
     primary: string;
     secondary: string;
     accent: string;
   };
-  morphDuration: number;
   autoRotate: boolean;
-  autoCycleFormations: boolean;
-  autoCycleInterval: number; // in seconds
-  showConnections: boolean;
   bloomIntensity: number;
-  mouseInteractionRadius: number;
 }
 
 export interface FormationMetadata {
   id: FormationType;
   name: string;
-  category: 'organism' | 'symbol' | 'geometric' | 'cosmic';
+  category: FormationCategory;
   description: string;
   particleCountRecommended: number;
   tagline: string;
+  symbolGlyph: string;
 }
